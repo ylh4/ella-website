@@ -13,20 +13,29 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const post = await prisma.blogPost.findUnique({ where: { slug } });
-  if (!post) return { title: "Post Not Found" };
-  return {
-    title: post.title,
-    description: post.excerpt || `Blog post by Ella: ${post.title}`,
-  };
+  try {
+    const { slug } = await params;
+    const post = await prisma.blogPost.findUnique({ where: { slug } });
+    if (!post) return { title: "Post Not Found" };
+    return {
+      title: post.title,
+      description: post.excerpt || `Blog post by Ella: ${post.title}`,
+    };
+  } catch {
+    return { title: "Post Not Found" };
+  }
 }
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  const post = await prisma.blogPost.findUnique({
-    where: { slug, publishedAt: { not: null } },
-  });
+  let post;
+  try {
+    post = await prisma.blogPost.findUnique({
+      where: { slug, publishedAt: { not: null } },
+    });
+  } catch (error) {
+    console.error("Failed to fetch blog post:", error);
+  }
 
   if (!post) notFound();
 

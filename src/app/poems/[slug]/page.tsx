@@ -11,20 +11,29 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const poem = await prisma.poem.findUnique({ where: { slug } });
-  if (!poem) return { title: "Poem Not Found" };
-  return {
-    title: poem.title,
-    description: `A poem by Ella: ${poem.title}`,
-  };
+  try {
+    const { slug } = await params;
+    const poem = await prisma.poem.findUnique({ where: { slug } });
+    if (!poem) return { title: "Poem Not Found" };
+    return {
+      title: poem.title,
+      description: `A poem by Ella: ${poem.title}`,
+    };
+  } catch {
+    return { title: "Poem Not Found" };
+  }
 }
 
 export default async function PoemDetailPage({ params }: Props) {
   const { slug } = await params;
-  const poem = await prisma.poem.findUnique({
-    where: { slug, publishedAt: { not: null } },
-  });
+  let poem;
+  try {
+    poem = await prisma.poem.findUnique({
+      where: { slug, publishedAt: { not: null } },
+    });
+  } catch (error) {
+    console.error("Failed to fetch poem:", error);
+  }
 
   if (!poem) notFound();
 

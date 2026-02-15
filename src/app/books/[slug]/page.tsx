@@ -11,20 +11,29 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const book = await prisma.book.findUnique({ where: { slug } });
-  if (!book) return { title: "Book Not Found" };
-  return {
-    title: book.title,
-    description: book.description,
-  };
+  try {
+    const { slug } = await params;
+    const book = await prisma.book.findUnique({ where: { slug } });
+    if (!book) return { title: "Book Not Found" };
+    return {
+      title: book.title,
+      description: book.description,
+    };
+  } catch {
+    return { title: "Book Not Found" };
+  }
 }
 
 export default async function BookDetailPage({ params }: Props) {
   const { slug } = await params;
-  const book = await prisma.book.findUnique({
-    where: { slug, publishedAt: { not: null } },
-  });
+  let book;
+  try {
+    book = await prisma.book.findUnique({
+      where: { slug, publishedAt: { not: null } },
+    });
+  } catch (error) {
+    console.error("Failed to fetch book:", error);
+  }
 
   if (!book) notFound();
 

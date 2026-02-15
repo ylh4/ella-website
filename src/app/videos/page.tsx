@@ -12,10 +12,15 @@ export const metadata: Metadata = {
 };
 
 export default async function VideosPage() {
-  const videos = await prisma.video.findMany({
-    where: { publishedAt: { not: null } },
-    orderBy: { publishedAt: "desc" },
-  });
+  let videos: Awaited<ReturnType<typeof prisma.video.findMany>> = [];
+  try {
+    videos = await prisma.video.findMany({
+      where: { publishedAt: { not: null } },
+      orderBy: { publishedAt: "desc" },
+    });
+  } catch (error) {
+    console.error("Failed to fetch videos:", error);
+  }
 
   return (
     <PublicLayout>

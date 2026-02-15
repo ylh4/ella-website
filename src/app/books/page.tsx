@@ -13,10 +13,15 @@ export const metadata: Metadata = {
 };
 
 export default async function BooksPage() {
-  const books = await prisma.book.findMany({
-    where: { publishedAt: { not: null } },
-    orderBy: { publishedAt: "desc" },
-  });
+  let books: Awaited<ReturnType<typeof prisma.book.findMany>> = [];
+  try {
+    books = await prisma.book.findMany({
+      where: { publishedAt: { not: null } },
+      orderBy: { publishedAt: "desc" },
+    });
+  } catch (error) {
+    console.error("Failed to fetch books:", error);
+  }
 
   return (
     <PublicLayout>

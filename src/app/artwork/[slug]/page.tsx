@@ -12,20 +12,29 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const artwork = await prisma.artwork.findUnique({ where: { slug } });
-  if (!artwork) return { title: "Artwork Not Found" };
-  return {
-    title: artwork.title,
-    description: artwork.description || `Artwork by Ella: ${artwork.title}`,
-  };
+  try {
+    const { slug } = await params;
+    const artwork = await prisma.artwork.findUnique({ where: { slug } });
+    if (!artwork) return { title: "Artwork Not Found" };
+    return {
+      title: artwork.title,
+      description: artwork.description || `Artwork by Ella: ${artwork.title}`,
+    };
+  } catch {
+    return { title: "Artwork Not Found" };
+  }
 }
 
 export default async function ArtworkDetailPage({ params }: Props) {
   const { slug } = await params;
-  const artwork = await prisma.artwork.findUnique({
-    where: { slug, publishedAt: { not: null } },
-  });
+  let artwork;
+  try {
+    artwork = await prisma.artwork.findUnique({
+      where: { slug, publishedAt: { not: null } },
+    });
+  } catch (error) {
+    console.error("Failed to fetch artwork:", error);
+  }
 
   if (!artwork) notFound();
 

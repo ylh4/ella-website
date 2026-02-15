@@ -6,28 +6,38 @@ export const dynamic = 'force-dynamic';
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXTAUTH_URL || "https://ella-website-azure.vercel.app";
 
-  const [books, poems, artworks, videos, blogPosts] = await Promise.all([
-    prisma.book.findMany({
-      where: { publishedAt: { not: null } },
-      select: { slug: true, updatedAt: true },
-    }),
-    prisma.poem.findMany({
-      where: { publishedAt: { not: null } },
-      select: { slug: true, updatedAt: true },
-    }),
-    prisma.artwork.findMany({
-      where: { publishedAt: { not: null } },
-      select: { slug: true, updatedAt: true },
-    }),
-    prisma.video.findMany({
-      where: { publishedAt: { not: null } },
-      select: { slug: true, updatedAt: true },
-    }),
-    prisma.blogPost.findMany({
-      where: { publishedAt: { not: null } },
-      select: { slug: true, updatedAt: true },
-    }),
-  ]);
+  let books: { slug: string; updatedAt: Date }[] = [];
+  let poems: { slug: string; updatedAt: Date }[] = [];
+  let artworks: { slug: string; updatedAt: Date }[] = [];
+  let videos: { slug: string; updatedAt: Date }[] = [];
+  let blogPosts: { slug: string; updatedAt: Date }[] = [];
+
+  try {
+    [books, poems, artworks, videos, blogPosts] = await Promise.all([
+      prisma.book.findMany({
+        where: { publishedAt: { not: null } },
+        select: { slug: true, updatedAt: true },
+      }),
+      prisma.poem.findMany({
+        where: { publishedAt: { not: null } },
+        select: { slug: true, updatedAt: true },
+      }),
+      prisma.artwork.findMany({
+        where: { publishedAt: { not: null } },
+        select: { slug: true, updatedAt: true },
+      }),
+      prisma.video.findMany({
+        where: { publishedAt: { not: null } },
+        select: { slug: true, updatedAt: true },
+      }),
+      prisma.blogPost.findMany({
+        where: { publishedAt: { not: null } },
+        select: { slug: true, updatedAt: true },
+      }),
+    ]);
+  } catch (error) {
+    console.error("Failed to fetch sitemap data:", error);
+  }
 
   const staticPages = [
     { url: baseUrl, lastModified: new Date() },

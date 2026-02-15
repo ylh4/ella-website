@@ -13,10 +13,15 @@ export const metadata: Metadata = {
 };
 
 export default async function ArtworkPage() {
-  const artworks = await prisma.artwork.findMany({
-    where: { publishedAt: { not: null } },
-    orderBy: { publishedAt: "desc" },
-  });
+  let artworks: Awaited<ReturnType<typeof prisma.artwork.findMany>> = [];
+  try {
+    artworks = await prisma.artwork.findMany({
+      where: { publishedAt: { not: null } },
+      orderBy: { publishedAt: "desc" },
+    });
+  } catch (error) {
+    console.error("Failed to fetch artwork:", error);
+  }
 
   return (
     <PublicLayout>
