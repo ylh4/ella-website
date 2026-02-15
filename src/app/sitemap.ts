@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = 'force-dynamic';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXTAUTH_URL || "https://ellas-creative-world.vercel.app";
+  const baseUrl = process.env.NEXTAUTH_URL || "https://ella-website-azure.vercel.app";
 
   const [books, poems, artworks, videos, blogPosts] = await Promise.all([
     prisma.book.findMany({

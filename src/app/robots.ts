@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/admin/", "/api/"],
     },
-    sitemap: `${process.env.NEXTAUTH_URL || "https://ellas-creative-world.vercel.app"}/sitemap.xml`,
+    sitemap: `${process.env.NEXTAUTH_URL || "https://ella-website-azure.vercel.app"}/sitemap.xml`,
   };
 }
