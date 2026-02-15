@@ -12,9 +12,12 @@ export function formatDate(date: Date | string) {
 
 export function extractYouTubeId(url: string): string | null {
   const patterns = [
-    /(?:youtube\.com\/watch\?v=)([^&\s]+)/,
-    /(?:youtu\.be\/)([^\s]+)/,
-    /(?:youtube\.com\/embed\/)([^?\s]+)/,
+    /(?:youtube\.com\/watch\?v=)([^&\s#]+)/,
+    /(?:youtu\.be\/)([^?\s&#]+)/,
+    /(?:youtube\.com\/embed\/)([^?\s&#]+)/,
+    /(?:youtube\.com\/shorts\/)([^?\s&#]+)/,
+    /(?:youtube\.com\/live\/)([^?\s&#]+)/,
+    /(?:youtube\.com\/v\/)([^?\s&#]+)/,
   ];
 
   for (const pattern of patterns) {
