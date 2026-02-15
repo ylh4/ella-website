@@ -13,9 +13,10 @@ export async function requireAuth() {
 
 export function handleApiError(error: unknown) {
   console.error("API Error:", error);
-  const message =
-    error instanceof Error ? error.message : "Internal server error";
-  return NextResponse.json({ error: message }, { status: 500 });
+  return NextResponse.json(
+    { error: "Internal server error" },
+    { status: 500 }
+  );
 }
 
 export async function generateUniqueSlug(

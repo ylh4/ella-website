@@ -13,33 +13,43 @@ import Link from "next/link";
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const [books, poems, artworks, videos, blogPosts] = await Promise.all([
-    prisma.book.findMany({
-      where: { publishedAt: { not: null }, featured: true },
-      orderBy: { publishedAt: "desc" },
-      take: 3,
-    }),
-    prisma.poem.findMany({
-      where: { publishedAt: { not: null }, featured: true },
-      orderBy: { publishedAt: "desc" },
-      take: 3,
-    }),
-    prisma.artwork.findMany({
-      where: { publishedAt: { not: null }, featured: true },
-      orderBy: { publishedAt: "desc" },
-      take: 4,
-    }),
-    prisma.video.findMany({
-      where: { publishedAt: { not: null }, featured: true },
-      orderBy: { publishedAt: "desc" },
-      take: 2,
-    }),
-    prisma.blogPost.findMany({
-      where: { publishedAt: { not: null }, featured: true },
-      orderBy: { publishedAt: "desc" },
-      take: 3,
-    }),
-  ]);
+  let books: Awaited<ReturnType<typeof prisma.book.findMany>> = [];
+  let poems: Awaited<ReturnType<typeof prisma.poem.findMany>> = [];
+  let artworks: Awaited<ReturnType<typeof prisma.artwork.findMany>> = [];
+  let videos: Awaited<ReturnType<typeof prisma.video.findMany>> = [];
+  let blogPosts: Awaited<ReturnType<typeof prisma.blogPost.findMany>> = [];
+
+  try {
+    [books, poems, artworks, videos, blogPosts] = await Promise.all([
+      prisma.book.findMany({
+        where: { publishedAt: { not: null }, featured: true },
+        orderBy: { publishedAt: "desc" },
+        take: 3,
+      }),
+      prisma.poem.findMany({
+        where: { publishedAt: { not: null }, featured: true },
+        orderBy: { publishedAt: "desc" },
+        take: 3,
+      }),
+      prisma.artwork.findMany({
+        where: { publishedAt: { not: null }, featured: true },
+        orderBy: { publishedAt: "desc" },
+        take: 4,
+      }),
+      prisma.video.findMany({
+        where: { publishedAt: { not: null }, featured: true },
+        orderBy: { publishedAt: "desc" },
+        take: 2,
+      }),
+      prisma.blogPost.findMany({
+        where: { publishedAt: { not: null }, featured: true },
+        orderBy: { publishedAt: "desc" },
+        take: 3,
+      }),
+    ]);
+  } catch (error) {
+    console.error("Failed to fetch featured content:", error);
+  }
 
   return (
     <PublicLayout>
