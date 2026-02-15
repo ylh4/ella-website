@@ -1,65 +1,182 @@
-import Image from "next/image";
+import PublicLayout from "@/components/layout/PublicLayout";
+import DecorativeLayout from "@/components/decorations/DecorativeLayout";
+import Mascot from "@/components/decorations/Mascot";
+import Star from "@/components/decorations/Star";
+import BookCard from "@/components/content/BookCard";
+import PoemCard from "@/components/content/PoemCard";
+import ArtworkCard from "@/components/content/ArtworkCard";
+import VideoCard from "@/components/content/VideoCard";
+import BlogCard from "@/components/content/BlogCard";
+import { prisma } from "@/lib/prisma";
+import Link from "next/link";
 
-export default function Home() {
+export const dynamic = 'force-dynamic';
+
+export default async function Home() {
+  const [books, poems, artworks, videos, blogPosts] = await Promise.all([
+    prisma.book.findMany({
+      where: { publishedAt: { not: null }, featured: true },
+      orderBy: { publishedAt: "desc" },
+      take: 3,
+    }),
+    prisma.poem.findMany({
+      where: { publishedAt: { not: null }, featured: true },
+      orderBy: { publishedAt: "desc" },
+      take: 3,
+    }),
+    prisma.artwork.findMany({
+      where: { publishedAt: { not: null }, featured: true },
+      orderBy: { publishedAt: "desc" },
+      take: 4,
+    }),
+    prisma.video.findMany({
+      where: { publishedAt: { not: null }, featured: true },
+      orderBy: { publishedAt: "desc" },
+      take: 2,
+    }),
+    prisma.blogPost.findMany({
+      where: { publishedAt: { not: null }, featured: true },
+      orderBy: { publishedAt: "desc" },
+      take: 3,
+    }),
+  ]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <PublicLayout>
+      <DecorativeLayout>
+        {/* Hero */}
+        <section className="text-center py-16 md:py-24">
+          <div className="flex justify-center mb-6">
+            <Mascot variant="waving" size="lg" className="animate-bounce-gentle" />
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold font-display text-lavender-800 mb-4">
+            Ella&apos;s Creative World
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-xl text-lavender-600 max-w-2xl mx-auto mb-8">
+            Welcome to my creative corner! I write books, poems, create artwork,
+            make videos, and share my thoughts on my blog.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+          <div className="flex justify-center gap-3">
+            <Star size="sm" delay="0s" />
+            <Star size="md" delay="0.5s" />
+            <Star size="sm" delay="1s" />
+          </div>
+        </section>
+
+        {/* Featured Books */}
+        {books.length > 0 && (
+          <section className="mb-16">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold font-display text-lavender-800">
+                My Books
+              </h2>
+              <Link
+                href="/books"
+                className="text-sm text-lavender-600 hover:text-lavender-800 font-medium"
+              >
+                View all &rarr;
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {books.map((book) => (
+                <BookCard key={book.id} {...book} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Featured Poems */}
+        {poems.length > 0 && (
+          <section className="mb-16">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold font-display text-lavender-800">
+                Poems
+              </h2>
+              <Link
+                href="/poems"
+                className="text-sm text-lavender-600 hover:text-lavender-800 font-medium"
+              >
+                View all &rarr;
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {poems.map((poem) => (
+                <PoemCard key={poem.id} {...poem} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Featured Artwork */}
+        {artworks.length > 0 && (
+          <section className="mb-16">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold font-display text-lavender-800">
+                Artwork
+              </h2>
+              <Link
+                href="/artwork"
+                className="text-sm text-lavender-600 hover:text-lavender-800 font-medium"
+              >
+                View all &rarr;
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {artworks.map((artwork) => (
+                <ArtworkCard key={artwork.id} {...artwork} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Featured Videos */}
+        {videos.length > 0 && (
+          <section className="mb-16">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold font-display text-lavender-800">
+                Videos
+              </h2>
+              <Link
+                href="/videos"
+                className="text-sm text-lavender-600 hover:text-lavender-800 font-medium"
+              >
+                View all &rarr;
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {videos.map((video) => (
+                <VideoCard key={video.id} {...video} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Featured Blog Posts */}
+        {blogPosts.length > 0 && (
+          <section className="mb-16">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold font-display text-lavender-800">
+                Blog
+              </h2>
+              <Link
+                href="/blog"
+                className="text-sm text-lavender-600 hover:text-lavender-800 font-medium"
+              >
+                View all &rarr;
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {blogPosts.map((post) => (
+                <BlogCard
+                  key={post.id}
+                  {...post}
+                  publishedAt={post.publishedAt!}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+      </DecorativeLayout>
+    </PublicLayout>
   );
 }

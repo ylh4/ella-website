@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ella's Creative World
+
+A full-stack personal portfolio and blog for Ella (Elnatan Lemma) — an 11-year-old creator who publishes books, poems, artwork, YouTube videos, and blog posts.
+
+Built with Next.js, Prisma, and Tailwind CSS. Features a whimsical purple-lavender theme with kawaii bear, star, and cloud decorations.
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router)
+- **Database:** PostgreSQL via Supabase
+- **ORM:** Prisma 7 with `@prisma/adapter-pg`
+- **Auth:** NextAuth v5 (Credentials)
+- **File Storage:** Vercel Blob
+- **Rich Text Editor:** Tiptap
+- **Styling:** Tailwind CSS v4
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- PostgreSQL database (Supabase free tier recommended)
+
+### Setup
+
+1. Clone the repository and install dependencies:
+
+```bash
+npm install
+```
+
+2. Copy `.env.example` to `.env.local` and fill in your values:
+
+```bash
+cp .env.example .env.local
+```
+
+Required environment variables:
+
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URL` | PostgreSQL connection string (from Supabase) |
+| `NEXTAUTH_SECRET` | Random secret (`openssl rand -base64 32`) |
+| `NEXTAUTH_URL` | Site URL (`http://localhost:3000` for local dev) |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob token (auto-populated on Vercel) |
+
+3. Generate Prisma client and run migrations:
+
+```bash
+npx prisma generate
+npx prisma migrate dev
+```
+
+4. Seed the database:
+
+```bash
+npx prisma db seed
+```
+
+5. Start the dev server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Default Admin Credentials
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Email:** ella@example.com
+- **Password:** ellaadmin123
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deployment (Vercel)
 
-## Learn More
+1. Push to GitHub
+2. Connect repository to Vercel
+3. Add Vercel Blob storage (auto-populates `BLOB_READ_WRITE_TOKEN`)
+4. Set environment variables: `DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`
+5. Set build command: `prisma generate && next build`
+6. Deploy, then seed the database once: `npx prisma db seed`
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+  app/           # Next.js App Router pages
+    admin/       # Admin dashboard & CRUD pages
+    api/         # REST API routes
+    books/       # Public book pages
+    poems/       # Public poem pages
+    artwork/     # Public artwork gallery
+    videos/      # Public video pages
+    blog/        # Public blog pages
+    about/       # About page
+  components/
+    admin/       # Admin form components
+    content/     # Content card components
+    decorations/ # Decorative SVG components
+    layout/      # Navbar, Footer, Sidebar
+    ui/          # Reusable UI primitives
+  lib/           # Utilities, Prisma client, auth, validations
+  generated/     # Prisma generated client (gitignored)
+prisma/
+  schema.prisma  # Database schema
+  seed.ts        # Seed data
+```

@@ -1,26 +1,89 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #faf5ef;
+  --foreground: #3e2723;
+  --cream-white: #fffcf5;
+  --lavender-50: #faf5ef;
+  --lavender-100: #f3ebe0;
+  --lavender-200: #e6d5c1;
+  --lavender-300: #d4b896;
+  --lavender-400: #bf9b6e;
+  --lavender-500: #a67c52;
+  --lavender-600: #8b6340;
+  --lavender-700: #704e34;
+  --lavender-800: #5c3d2e;
+  --lavender-900: #4a3228;
+  --lavender-950: #2c1a10;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-cream: var(--cream-white);
+  --font-sans: var(--font-outfit);
+  --font-display: var(--font-poppins);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --color-lavender-50: var(--lavender-50);
+  --color-lavender-100: var(--lavender-100);
+  --color-lavender-200: var(--lavender-200);
+  --color-lavender-300: var(--lavender-300);
+  --color-lavender-400: var(--lavender-400);
+  --color-lavender-500: var(--lavender-500);
+  --color-lavender-600: var(--lavender-600);
+  --color-lavender-700: var(--lavender-700);
+  --color-lavender-800: var(--lavender-800);
+  --color-lavender-900: var(--lavender-900);
+  --color-lavender-950: var(--lavender-950);
+
+  --animate-fade-in: fadeIn 0.5s ease-out;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-twinkle: twinkle 2s ease-in-out infinite;
+  --animate-bounce-gentle: bounceGentle 2s ease-in-out infinite;
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+  @keyframes bounceGentle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background-color: var(--lavender-300);
+  color: var(--lavender-950);
+}
+
+.prose {
+  max-width: 65ch;
+}
+
+.prose h1, .prose h2, .prose h3 {
+  font-family: var(--font-display), sans-serif;
+  color: var(--lavender-800);
+}
+
+.prose a {
+  color: var(--lavender-600);
+  text-decoration: underline;
+}
+
+.prose a:hover {
+  color: var(--lavender-800);
 }
